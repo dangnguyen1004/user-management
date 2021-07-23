@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import ButtonAdd from '../components/ButtonAdd';
 import Card from '../components/Card';
 import Modal from '../components/UserFormModal';
 import { fakeDeleteUser, fakeUpdateUser } from '../services/fakeUserService';
@@ -7,8 +8,8 @@ import { deleteUser, getUsers, saveUser } from '../services/userService';
 
 function Users(props) {
     const [users, setUsers] = useState([])
-    const [modal, setModal] = useState(true)
-    const [currentId, setCurrentId] = useState('new')
+    const [modal, setModal] = useState(false)
+    const [currentId, setCurrentId] = useState('new') // for user form
 
     const setUsersData = async () => {
         const { data } = await getUsers()
@@ -25,7 +26,7 @@ function Users(props) {
         }
     }
 
-    const handleClose = () => {
+    const handleCloseForm = () => {
         setCurrentId('')
         setModal(false)
     }
@@ -35,7 +36,7 @@ function Users(props) {
             await saveUser(user)
             setUsers(fakeUpdateUser(users, user))
             toast.success('Save successful')
-            handleClose()
+            handleCloseForm()
         } catch (error) {
             toast.error('Save failed')
         }
@@ -58,7 +59,7 @@ function Users(props) {
     return (
         <div>
             <h1 className="mb-5 mt-5">Users management</h1>
-            <Modal show={modal} onClose={handleClose} onSave={handleSave} currentId={currentId} />
+            <Modal show={modal} onClose={handleCloseForm} onSave={handleSave} currentId={currentId} />
             <div className="d-flex flex-wrap">
                 {users.map((user) => (
                     <Card
@@ -68,30 +69,7 @@ function Users(props) {
                         onUpdate={() => handleUpdate(user.id)}
                     />
                 ))}
-                <div
-                    className="mb-3"
-                    style={{
-                        width: 300,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
-                >
-                    <button
-                        onClick={handleAdd}
-                        className="btn btn-secondary mb-3"
-                        style={{
-                            width: 100,
-                            height: 100,
-                            borderRadius: 50,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                    >
-                        +
-                    </button>
-                </div>
+                <ButtonAdd onAdd={handleAdd}></ButtonAdd>
             </div>
         </div>
     );

@@ -10,6 +10,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+
+document.title="User Management App"
+
 ReactDOM.render(
   <BrowserRouter>
     <ToastContainer/>

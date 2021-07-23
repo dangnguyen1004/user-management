@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getUser } from '../services/userService';
 import Joi from 'joi'
 import Modal from 'react-bootstrap/Modal'
+import Input from './Input'
 
 function UserForm({ show, onClose, onSave, currentId }) {
     const [user, setUser] = useState({
@@ -29,7 +30,7 @@ function UserForm({ show, onClose, onSave, currentId }) {
                     first_name: "",
                     last_name: "",
                     avatar: "",
-                })
+                });
                 return
             }
             const { data } = await getUser(userId)
@@ -59,7 +60,6 @@ function UserForm({ show, onClose, onSave, currentId }) {
         delete tempObj.id
         const validation = schema.validate(tempObj, { abortEarly: false })
         if (!validation.error) return null
-
         const newErrors = {}
         for (let item of validation.error.details) {
             newErrors[item.path[0]] = item.message
@@ -85,26 +85,10 @@ function UserForm({ show, onClose, onSave, currentId }) {
             </Modal.Header>
             <Modal.Body>
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="first_name" className="form-label">First Name</label>
-                        <input type="text" className="form-control" id="first_name" name='first_name' onChange={handleChange} value={user['first_name']} />
-                        {errors && errors['first_name'] && <div className="alert alert-danger" role="alert">{errors['first_name']}</div>}
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="last_name" className="form-label">Last Name</label>
-                        <input type="text" className="form-control" id="last_name" name='last_name' onChange={handleChange} value={user['last_name']} />
-                        {errors && errors['last_name'] && <div className="alert alert-danger" role="alert">{errors['last_name']}</div>}
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input type="email" className="form-control" id="email" name='email' onChange={handleChange} value={user['email']} />
-                        {errors && errors['email'] && <div className="alert alert-danger" role="alert">{errors['email']}</div>}
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="avatar" className="form-label">Avatar URL</label>
-                        <input type="avatar" className="form-control" id="avatar" name='avatar' onChange={handleChange} value={user['avatar']} />
-                        {errors && errors['avatar'] && <div className="alert alert-danger" role="alert">{errors['avatar']}</div>}
-                    </div>
+                    <Input name='first_name' label="First Name" onChange={handleChange} errors={errors} user={user} />
+                    <Input name='last_name' label="Last Name" onChange={handleChange} errors={errors} user={user} />
+                    <Input name='email' label="Email" onChange={handleChange} errors={errors} user={user} />
+                    <Input name='avatar' label="Avatar" onChange={handleChange} errors={errors} user={user} />
                     <div className="mb-3">
                         <img src={user['avatar']} style={{ width: 200, height: 200 }} alt="avatar" />
                     </div>
